@@ -1,0 +1,155 @@
+version: '3.8' 
+services:          
+  mqtt1:
+    container_name: mqtt1
+    hostname: mqtt1
+    image: local/mosquitto
+    restart: always
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s        
+      resources:     
+        limits:
+          cpus: 0.50
+          memory: 512M    
+    expose:
+       - "1883/tcp"
+       - "8883/tcp"
+       - "9001/tcp"
+    volumes:
+       - ./conf1:/etc/mosquitto:ro
+       - ./certs:/etc/mosquitto/certs:ro
+    secrets:
+       - source: passfile
+         target: passwd
+    networks:
+        mqttnet:
+            ipv4_address: 10.50.0.10
+    depends_on:
+       - mqtt2
+       - mqtt3
+  mqtt2:
+    container_name: mqtt2
+    hostname: mqtt2
+    image: local/mosquitto
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s        
+      resources:     
+        limits:
+          cpus: 0.50
+          memory: 512M
+    restart: always
+    expose:
+       - "1883/tcp"
+       - "8883/tcp"
+       - "9001/tcp"
+    volumes:
+       - ./conf2:/etc/mosquitto:ro
+       - ./certs:/etc/mosquitto/certs:ro       
+    secrets:
+       - source: passfile
+         target: passwd
+    networks:
+        mqttnet:
+            ipv4_address: 10.50.0.11
+  mqtt3:
+    container_name: mqtt3
+    hostname: mqtt3
+    image: local/mosquitto
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s        
+      resources:     
+        limits:
+          cpus: 0.50
+          memory: 512M  
+    restart: always
+    expose:
+       - "1883/tcp"
+       - "8883/tcp"
+       - "9001/tcp"
+    volumes:
+       - ./conf3:/etc/mosquitto:ro
+       - ./certs:/etc/mosquitto/certs:ro       
+    secrets:
+       - source: passfile
+         target: passwd
+    networks:
+        mqttnet:
+            ipv4_address: 10.50.0.12            
+  mqtt4:
+    container_name: mqtt4
+    hostname: mqtt4
+    image: local/mosquitto
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s        
+      resources:     
+        limits:
+          cpus: 0.50
+          memory: 512M   
+    restart: always
+    expose:
+       - "1883/tcp"
+       - "8883/tcp"
+       - "9001/tcp"
+    volumes:
+       - ./conf4:/etc/mosquitto:ro
+       - ./certs:/etc/mosquitto/certs:ro       
+    secrets:
+       - source: passfile
+         target: passwd
+    networks:
+        mqttnet:
+            ipv4_address: 10.50.0.13
+  mqtt5:
+    container_name: mqtt5
+    hostname: mqtt5
+    image: local/mosquitto
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s        
+      resources:     
+        limits:
+          cpus: 0.50
+          memory: 512M    
+    restart: always
+    expose:
+       - "1883/tcp"
+       - "8883/tcp"
+       - "9001/tcp"
+    volumes:
+       - ./conf5:/etc/mosquitto:ro
+       - ./certs:/etc/mosquitto/certs:ro       
+    secrets:
+       - source: passfile
+         target: passwd
+    networks:
+        mqttnet:
+            ipv4_address: 10.50.0.14          
+networks:
+   mqttnet:
+     ipam:
+       driver: default
+       config:
+       - subnet: "10.50.0.0/24"         
+
+secrets:
+   passfile:
+      file: ./conf1/passwd
